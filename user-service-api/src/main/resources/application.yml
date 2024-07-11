@@ -5,3 +5,9 @@ spring:
     mongodb:
       uri: 'mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTER}/${MONGODB_DATABASE}?retryWrites=true&w=majority&appName=${MONGODB_APP_NAME}'
       auto-index-creation: true
+
+springdoc:
+  open-api:
+    title: 'User Service API'
+    description: 'Component responsible for user management'
+    version: '1.0.0'
