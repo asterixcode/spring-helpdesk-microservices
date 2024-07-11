@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: 'user-service-api'
+  data:
+    mongodb:
+      uri: mongodb://localhost
+      port: 27017
+      database: test-db
