@@ -2,6 +2,7 @@ package com.asterixcode.userserviceapi.service;
 
 import com.asterixcode.userserviceapi.mapper.UserMapper;
 import com.asterixcode.userserviceapi.repository.UserRepository;
+import java.util.List;
 import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateUserRequest;
 import models.responses.UserResponse;
@@ -46,5 +47,9 @@ public class UserService {
               throw new DataIntegrityViolationException(
                   "Email [ %s ] already exists".formatted(email));
             });
+  }
+
+  public List<UserResponse> findAll() {
+    return userRepository.findAll().stream().map(userMapper::fromEntity).toList();
   }
 }

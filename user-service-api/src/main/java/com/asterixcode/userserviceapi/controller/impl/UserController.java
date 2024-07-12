@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.*;
 
 import com.asterixcode.userserviceapi.controller.UserControllerInterface;
 import com.asterixcode.userserviceapi.service.UserService;
+import java.util.List;
 import models.requests.CreateUserRequest;
 import models.responses.UserResponse;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,10 @@ public class UserController implements UserControllerInterface {
   public ResponseEntity<Void> save(CreateUserRequest createUserRequest) {
     userService.save(createUserRequest);
     return ResponseEntity.status(CREATED.value()).build();
+  }
+
+  @Override
+  public ResponseEntity<List<UserResponse>> findAll() {
+    return ResponseEntity.ok().body(userService.findAll());
   }
 }
