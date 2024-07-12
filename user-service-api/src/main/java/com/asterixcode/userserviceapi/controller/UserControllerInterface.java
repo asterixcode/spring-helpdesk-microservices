@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import models.exceptions.StandardError;
 import models.requests.CreateUserRequest;
+import models.requests.UpdateUserRequest;
 import models.responses.UserResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -91,4 +92,46 @@ public interface UserControllerInterface {
       })
   @GetMapping
   ResponseEntity<List<UserResponse>> findAll();
+
+  @Operation(summary = "Update user")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "User updated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = UserResponse.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "User not found",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class)))
+      })
+  @PutMapping("/{id}")
+  ResponseEntity<UserResponse> update(
+      @Parameter(
+              description = "Id of the user to be updated. Cannot be empty.",
+              required = true,
+              example = "66903ead0437ce1fc5704bec")
+          @PathVariable(name = "id")
+          final String id,
+      @Valid @RequestBody UpdateUserRequest createUserRequest);
 }

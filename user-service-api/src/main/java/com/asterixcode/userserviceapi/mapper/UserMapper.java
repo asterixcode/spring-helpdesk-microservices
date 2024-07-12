@@ -5,9 +5,11 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.*;
 
 import com.asterixcode.userserviceapi.entity.User;
 import models.requests.CreateUserRequest;
+import models.requests.UpdateUserRequest;
 import models.responses.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(
     componentModel = "spring",
@@ -18,4 +20,7 @@ public interface UserMapper {
 
   @Mapping(target = "id", ignore = true)
   User fromRequest(CreateUserRequest createUserRequest);
+
+  @Mapping(target = "id", ignore = true)
+  User updateEntity(UpdateUserRequest updateUserRequest, @MappingTarget User entity);
 }
