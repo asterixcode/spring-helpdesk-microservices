@@ -15,49 +15,45 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-  private final UserRepository userRepository;
-  private final UserMapper userMapper;
+  private final UserRepository repository;
+  private final UserMapper mapper;
   private final BCryptPasswordEncoder encoder;
 
-  public UserService(
-      UserRepository userRepository, UserMapper userMapper, BCryptPasswordEncoder encoder) {
-    this.userRepository = userRepository;
-    this.userMapper = userMapper;
+  public UserService(UserRepository repository, UserMapper mapper, BCryptPasswordEncoder encoder) {
+    this.repository = repository;
+    this.mapper = mapper;
     this.encoder = encoder;
   }
 
   public UserResponse findById(final String id) {
-    return userMapper.fromEntity(findByIdOrThrow(id));
+    return mapper.fromEntity(findByIdOrThrow(id));
   }
 
-  public void save(CreateUserRequest createUserRequest) {
-    verifyIfEmailExists(createUserRequest.email(), null);
-    userRepository.save(
-        userMapper
-            .fromRequest(createUserRequest)
-            .withPassword(encoder.encode(createUserRequest.password())));
+  public void save(CreateUserRequest request) {
+    verifyIfEmailExists(request.email(), null);
+    repository.save(mapper.fromRequest(request).withPassword(encoder.encode(request.password())));
   }
 
   public List<UserResponse> findAll() {
-    return userRepository.findAll().stream().map(userMapper::fromEntity).toList();
+    return repository.findAll().stream().map(mapper::fromEntity).toList();
   }
 
-  public UserResponse update(String id, UpdateUserRequest updateUserRequest) {
+  public UserResponse update(String id, UpdateUserRequest request) {
     User entity = findByIdOrThrow(id);
-    verifyIfEmailExists(updateUserRequest.email(), id);
+    verifyIfEmailExists(request.email(), id);
     final var updatedEntity =
-        userRepository.save(
-            userMapper
-                .updateEntity(updateUserRequest, entity)
+        repository.save(
+            mapper
+                .updateEntity(request, entity)
                 .withPassword(
-                    updateUserRequest.password() != null
-                        ? encoder.encode(updateUserRequest.password())
+                    request.password() != null
+                        ? encoder.encode(request.password())
                         : entity.getPassword()));
-    return userMapper.fromEntity(updatedEntity);
+    return mapper.fromEntity(updatedEntity);
   }
 
   private User findByIdOrThrow(final String id) {
-    return userRepository
+    return repository
         .findById(id)
         .orElseThrow(
             () ->
@@ -69,7 +65,7 @@ public class UserService {
   }
 
   private void verifyIfEmailExists(final String email, final String id) {
-    userRepository
+    repository
         .findByEmail(email)
         .filter(user -> !user.getId().equals(id))
         .ifPresent(
