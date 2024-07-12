@@ -9,6 +9,7 @@ import models.requests.CreateUserRequest;
 import models.requests.UpdateUserRequest;
 import models.responses.UserResponse;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,10 +17,13 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final UserMapper userMapper;
+  private final BCryptPasswordEncoder encoder;
 
-  public UserService(UserRepository userRepository, UserMapper userMapper) {
+  public UserService(
+      UserRepository userRepository, UserMapper userMapper, BCryptPasswordEncoder encoder) {
     this.userRepository = userRepository;
     this.userMapper = userMapper;
+    this.encoder = encoder;
   }
 
   public UserResponse findById(final String id) {
@@ -28,7 +32,10 @@ public class UserService {
 
   public void save(CreateUserRequest createUserRequest) {
     verifyIfEmailExists(createUserRequest.email(), null);
-    userRepository.save(userMapper.fromRequest(createUserRequest));
+    userRepository.save(
+        userMapper
+            .fromRequest(createUserRequest)
+            .withPassword(encoder.encode(createUserRequest.password())));
   }
 
   public List<UserResponse> findAll() {
@@ -39,7 +46,13 @@ public class UserService {
     User entity = findByIdOrThrow(id);
     verifyIfEmailExists(updateUserRequest.email(), id);
     final var updatedEntity =
-        userRepository.save(userMapper.updateEntity(updateUserRequest, entity));
+        userRepository.save(
+            userMapper
+                .updateEntity(updateUserRequest, entity)
+                .withPassword(
+                    updateUserRequest.password() != null
+                        ? encoder.encode(updateUserRequest.password())
+                        : entity.getPassword()));
     return userMapper.fromEntity(updatedEntity);
   }
 
