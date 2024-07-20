@@ -1,5 +1,6 @@
 package com.asterixcode.userserviceapi.service;
 
+import static com.asterixcode.userserviceapi.creator.Creator.generateMock;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -38,7 +39,7 @@ class UserServiceTest {
   @Test
   void whenCallFindByIdWithValidIdThenReturnsUserResponse() {
     when(repository.findById(anyString())).thenReturn(Optional.of(new User()));
-    when(mapper.fromEntity(any(User.class))).thenReturn(mock(UserResponse.class));
+    when(mapper.fromEntity(any(User.class))).thenReturn(generateMock(UserResponse.class));
 
     final var response = service.findById("1");
 
