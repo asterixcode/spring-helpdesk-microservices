@@ -8,6 +8,7 @@ import static org.mockito.Mockito.*;
 import com.asterixcode.userserviceapi.entity.User;
 import com.asterixcode.userserviceapi.mapper.UserMapper;
 import com.asterixcode.userserviceapi.repository.UserRepository;
+import java.util.List;
 import java.util.Optional;
 import models.exceptions.ResourceNotFoundException;
 import models.responses.UserResponse;
@@ -61,5 +62,20 @@ class UserServiceTest {
 
     verify(repository, times(1)).findById(anyString());
     verify(mapper, never()).fromEntity(any(User.class));
+  }
+
+  @Test
+  void whenCallFindAllThenReturnListOfUserResponse() {
+    when(repository.findAll()).thenReturn(List.of(new User(), new User()));
+    when(mapper.fromEntity(any(User.class))).thenReturn(mock(UserResponse.class));
+
+    final var response = service.findAll();
+
+    assertNotNull(response);
+    assertEquals(2, response.size());
+    assertEquals(UserResponse.class, response.getFirst().getClass());
+
+    verify(repository, times(1)).findAll();
+    verify(mapper, times(2)).fromEntity(any(User.class));
   }
 }
