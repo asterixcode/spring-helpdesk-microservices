@@ -2,18 +2,21 @@ package com.asterixcode.userserviceapi.controller.impl;
 
 import static com.asterixcode.userserviceapi.creator.Creator.generateMock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.asterixcode.userserviceapi.containers.MongoDBTestContainerConfig;
 import com.asterixcode.userserviceapi.entity.User;
 import com.asterixcode.userserviceapi.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -82,5 +85,28 @@ class UserControllerTest {
         .andExpect(jsonPath("$.[1].profiles").isArray());
 
     userRepository.deleteAll(List.of(entity1, entity2));
+  }
+
+  @Test
+  void testSaveUserWithSuccess() throws Exception {
+    final var validEmail = "ahi213uashe12@mail.com";
+    final var request = generateMock(User.class).withEmail(validEmail);
+
+    mockMvc
+        .perform(
+            post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(request)))
+        .andExpect(status().isCreated());
+
+    userRepository.deleteByEmail(validEmail);
+  }
+
+  private String toJson(final Object object) {
+    try {
+      return new ObjectMapper().writeValueAsString(object);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }
