@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.asterixcode.userserviceapi.containers.MongoDBTestContainerConfig;
 import com.asterixcode.userserviceapi.entity.User;
 import com.asterixcode.userserviceapi.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,5 +55,32 @@ class UserControllerTest {
         .andExpect(jsonPath("$.path").value("/api/v1/users/123"))
         .andExpect(jsonPath("$.status").value(404))
         .andExpect(jsonPath("$.timestamp").isNotEmpty());
+  }
+
+  @Test
+  void testFindAllWithSuccess() throws Exception {
+    final var entity1 = generateMock(User.class);
+    final var entity2 = generateMock(User.class);
+
+    userRepository.saveAll(List.of(entity1, entity2));
+
+    mockMvc
+        .perform(get("/api/v1/users"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$.[0]").isNotEmpty())
+        .andExpect(jsonPath("$.[1]").isNotEmpty())
+        .andExpect(jsonPath("$.[0].id").value(entity1.getId()))
+        .andExpect(jsonPath("$.[0].name").value(entity1.getName()))
+        .andExpect(jsonPath("$.[0].email").value(entity1.getEmail()))
+        .andExpect(jsonPath("$.[0].password").value(entity1.getPassword()))
+        .andExpect(jsonPath("$.[0].profiles").isArray())
+        .andExpect(jsonPath("$.[1].id").value(entity2.getId()))
+        .andExpect(jsonPath("$.[1].name").value(entity2.getName()))
+        .andExpect(jsonPath("$.[1].email").value(entity2.getEmail()))
+        .andExpect(jsonPath("$.[1].password").value(entity2.getPassword()))
+        .andExpect(jsonPath("$.[1].profiles").isArray());
+
+    userRepository.deleteAll(List.of(entity1, entity2));
   }
 }
