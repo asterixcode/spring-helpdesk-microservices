@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class UserControllerTest {
 
+  public static final String BASE_URI = "/api/v1/users";
   @Autowired private MockMvc mockMvc;
 
   @Autowired private UserRepository userRepository;
@@ -68,7 +69,7 @@ class UserControllerTest {
     userRepository.saveAll(List.of(entity1, entity2));
 
     mockMvc
-        .perform(get("/api/v1/users"))
+        .perform(get(BASE_URI))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.[0]").isNotEmpty())
@@ -93,13 +94,31 @@ class UserControllerTest {
     final var request = generateMock(User.class).withEmail(validEmail);
 
     mockMvc
-        .perform(
-            post("/api/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                    .content(toJson(request)))
+        .perform(post(BASE_URI).contentType(MediaType.APPLICATION_JSON).content(toJson(request)))
         .andExpect(status().isCreated());
 
     userRepository.deleteByEmail(validEmail);
+  }
+
+  @Test
+  void testSaveUserWithConflict() throws Exception {
+    final var validEmail = "ahi213uashe12@mail.com";
+    final var entity = generateMock(User.class).withEmail(validEmail);
+
+    userRepository.save(entity);
+
+    final var request = generateMock(User.class).withEmail(validEmail);
+
+    mockMvc
+        .perform(post(BASE_URI).contentType(MediaType.APPLICATION_JSON).content(toJson(request)))
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.message").value("Email [ %s ] already exists".formatted(validEmail)))
+        .andExpect(jsonPath("$.error").value(HttpStatus.CONFLICT.getReasonPhrase()))
+        .andExpect(jsonPath("$.path").value(BASE_URI))
+        .andExpect(jsonPath("$.status").value(409))
+        .andExpect(jsonPath("$.timestamp").isNotEmpty());
+
+    userRepository.deleteById(entity.getId());
   }
 
   private String toJson(final Object object) {
