@@ -121,6 +121,27 @@ class UserControllerTest {
     userRepository.deleteById(entity.getId());
   }
 
+  @Test
+  void testSaveUserWithNameEmptyThenThrowBadRequest() throws Exception {
+    final var request = generateMock(User.class).withEmail(VALID_EMAIL).withName("");
+
+    mockMvc
+        .perform(post(BASE_URI).contentType(MediaType.APPLICATION_JSON).content(toJson(request)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Exception in validation fields"))
+        .andExpect(jsonPath("$.error").value("Validation Error"))
+        .andExpect(jsonPath("$.path").value(BASE_URI))
+        .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+        .andExpect(jsonPath("$.timestamp").isNotEmpty())
+        .andExpect(
+            jsonPath(
+                    "$.errors[?(@.fieldName=='name' && @.message=='Name must be between 3 and 50 characters')]")
+                .exists())
+        .andExpect(
+            jsonPath("$.errors[?(@.fieldName=='name' && @.message=='Name cannot be empty')]")
+                .exists());
+  }
+
   private String toJson(final Object object) {
     try {
       return new ObjectMapper().writeValueAsString(object);
