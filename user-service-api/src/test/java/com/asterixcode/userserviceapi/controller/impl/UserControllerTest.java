@@ -18,9 +18,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
 @ContextConfiguration(classes = MongoDBTestContainerConfig.class)
 @ActiveProfiles("it")
+@AutoConfigureMockMvc
 class UserControllerTest {
 
   @Autowired private MockMvc mockMvc;
