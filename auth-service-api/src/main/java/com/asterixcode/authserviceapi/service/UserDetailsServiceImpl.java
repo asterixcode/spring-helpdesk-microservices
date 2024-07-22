@@ -1,6 +1,6 @@
 package com.asterixcode.authserviceapi.service;
 
-import com.asterixcode.authserviceapi.repositoy.UserRepository;
+import com.asterixcode.authserviceapi.repository.UserRepository;
 import com.asterixcode.authserviceapi.security.dto.UserDetailsDTO;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

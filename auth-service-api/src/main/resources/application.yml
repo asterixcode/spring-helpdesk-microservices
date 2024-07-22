@@ -9,3 +9,4 @@ spring:
 
 jwt.secret: ${JWT_SECRET}
 jwt.expiration: ${JWT_EXPIRATION}
+jwt.expiration-seconds.refresh-token: ${JWT_EXPIRATION_SECONDS_REFRESH_TOKEN}

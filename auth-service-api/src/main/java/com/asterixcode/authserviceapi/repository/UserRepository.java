@@ -1,4 +1,4 @@
-package com.asterixcode.authserviceapi.repositoy;
+package com.asterixcode.authserviceapi.repository;
 
 import com.asterixcode.authserviceapi.models.User;
 import java.util.Optional;

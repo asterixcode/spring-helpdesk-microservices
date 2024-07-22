@@ -18,7 +18,7 @@ public class SecurityConfig {
               authorizeHttp.requestMatchers("/swagger-ui/**").permitAll();
               authorizeHttp.requestMatchers("/swagger-ui.html").permitAll();
               authorizeHttp.requestMatchers("/v3/api-docs/**").permitAll();
-              authorizeHttp.requestMatchers("/api/v1/auth/login/**").permitAll();
+              authorizeHttp.requestMatchers("/api/v1/auth/**").permitAll();
               authorizeHttp.anyRequest().authenticated();
             })
         .sessionManagement(AbstractHttpConfigurer::disable)

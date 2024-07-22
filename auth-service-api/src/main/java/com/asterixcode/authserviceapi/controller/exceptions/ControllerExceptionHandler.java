@@ -5,6 +5,8 @@ import static org.springframework.http.HttpStatus.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import models.exceptions.RefreshTokenExpiredException;
+import models.exceptions.ResourceNotFoundException;
 import models.exceptions.StandardError;
 import models.exceptions.ValidationError;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-  @ExceptionHandler(BadCredentialsException.class)
+  @ExceptionHandler({BadCredentialsException.class, RefreshTokenExpiredException.class})
   ResponseEntity<StandardError> handleBadCredentialsException(
       final BadCredentialsException ex, final HttpServletRequest request) {
     return ResponseEntity.status(UNAUTHORIZED)
@@ -26,6 +28,20 @@ public class ControllerExceptionHandler {
                 .timestamp(now())
                 .status(UNAUTHORIZED.value())
                 .error(UNAUTHORIZED.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build());
+  }
+
+  @ExceptionHandler(ResourceNotFoundException.class)
+  ResponseEntity<StandardError> handleResourceNotFoundException(
+      final ResourceNotFoundException ex, final HttpServletRequest request) {
+    return ResponseEntity.status(NOT_FOUND)
+        .body(
+            StandardError.builder()
+                .timestamp(now())
+                .status(NOT_FOUND.value())
+                .error(NOT_FOUND.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build());
