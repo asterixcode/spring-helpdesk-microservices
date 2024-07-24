@@ -5,6 +5,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.*;
+import models.enums.OrderStatusEnum;
 
 @Entity
 @Getter
@@ -16,8 +17,7 @@ import lombok.*;
 @Table(name = "tb_orders")
 public class Order implements Serializable {
 
-  @Serial
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,11 @@ public class Order implements Serializable {
   @Column(nullable = false, length = 3000)
   private String description;
 
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   @Builder.Default
-  private LocalDateTime createdAt = LocalDateTime.now();
+  private OrderStatusEnum status = OrderStatusEnum.OPEN;
+
+  @Builder.Default private LocalDateTime createdAt = LocalDateTime.now();
   private LocalDateTime closedAt;
 }
