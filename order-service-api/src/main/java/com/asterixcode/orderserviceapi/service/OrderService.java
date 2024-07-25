@@ -1,5 +1,6 @@
 package com.asterixcode.orderserviceapi.service;
 
+import com.asterixcode.orderserviceapi.client.UserServiceFeignClient;
 import com.asterixcode.orderserviceapi.entity.Order;
 import com.asterixcode.orderserviceapi.mapper.OrderMapper;
 import com.asterixcode.orderserviceapi.repository.OrderRepository;
@@ -23,6 +24,7 @@ public class OrderService implements OrderServiceInterface {
 
   private final OrderRepository repository;
   private final OrderMapper mapper;
+  private final UserServiceFeignClient userServiceFeignClient;
 
   @Override
   public Order findById(Long id) {
@@ -36,6 +38,7 @@ public class OrderService implements OrderServiceInterface {
 
   @Override
   public void save(CreateOrderRequest createOrderRequest) {
+    validateUserId(createOrderRequest.requesterId());
     final var entity = repository.save(mapper.fromRequest(createOrderRequest));
     log.info("Order created: {}", entity);
   }
@@ -66,12 +69,19 @@ public class OrderService implements OrderServiceInterface {
   }
 
   @Override
-  public Page<Order> findAllPaginated(Integer page, Integer linesPerPage, String direction, String orderBy) {
-    PageRequest pageRequest = PageRequest.of(
+  public Page<Order> findAllPaginated(
+      Integer page, Integer linesPerPage, String direction, String orderBy) {
+    PageRequest pageRequest =
+        PageRequest.of(
             page,
             linesPerPage,
             org.springframework.data.domain.Sort.Direction.valueOf(direction),
             orderBy);
     return repository.findAll(pageRequest);
+  }
+
+  void validateUserId(final String userId) {
+    final var response = userServiceFeignClient.findById(userId).getBody();
+    log.info("User found: {}", response);
   }
 }
