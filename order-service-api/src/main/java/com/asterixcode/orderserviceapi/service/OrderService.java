@@ -51,4 +51,9 @@ public class OrderService implements OrderServiceInterface {
 
     return mapper.fromEntity(updatedEntity);
   }
+
+  @Override
+  public void deleteById(Long id) {
+    repository.delete(findById(id));
+  }
 }

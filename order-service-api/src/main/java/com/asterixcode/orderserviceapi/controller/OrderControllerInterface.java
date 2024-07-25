@@ -122,4 +122,37 @@ public interface OrderControllerInterface {
           Long id,
       @Parameter(description = "Update order request", required = true) @Valid @RequestBody
           final UpdateOrderRequest request);
+
+  @Operation(summary = "Delete order")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Order deleted"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not found",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class)))
+      })
+  @DeleteMapping("/{id}")
+  ResponseEntity<Void> deleteById(
+      @NotNull(message = "Order ID must be informed")
+          @Parameter(description = "Order ID", required = true, example = "2")
+          @PathVariable(name = "id")
+          final Long id);
 }

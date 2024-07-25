@@ -35,4 +35,10 @@ public class OrderController implements OrderControllerInterface {
   public ResponseEntity<OrderResponse> update(final Long id, UpdateOrderRequest request) {
     return ResponseEntity.ok().body(service.update(id, request));
   }
+
+  @Override
+  public ResponseEntity<Void> deleteById(Long id) {
+    service.deleteById(id);
+    return ResponseEntity.noContent().build();
+  }
 }
