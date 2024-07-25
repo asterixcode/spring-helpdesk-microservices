@@ -13,6 +13,7 @@ import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import models.responses.UserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,12 @@ public class OrderService implements OrderServiceInterface {
 
   @Override
   public void save(CreateOrderRequest createOrderRequest) {
-    validateUserId(createOrderRequest.requesterId());
+    final var requester = validateUserId(createOrderRequest.requesterId());
+    final var customer = validateUserId(createOrderRequest.customerId());
+
+    log.info("Requester: {}", requester);
+    log.info("Customer: {}", customer);
+
     final var entity = repository.save(mapper.fromRequest(createOrderRequest));
     log.info("Order created: {}", entity);
   }
@@ -80,8 +86,7 @@ public class OrderService implements OrderServiceInterface {
     return repository.findAll(pageRequest);
   }
 
-  void validateUserId(final String userId) {
-    final var response = userServiceFeignClient.findById(userId).getBody();
-    log.info("User found: {}", response);
+  UserResponse validateUserId(final String userId) {
+    return userServiceFeignClient.findById(userId).getBody();
   }
 }
