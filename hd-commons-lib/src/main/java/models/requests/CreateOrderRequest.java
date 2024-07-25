@@ -13,7 +13,7 @@ public record CreateOrderRequest(
         @NotBlank(message = "The customerId cannot be null or empty")
         @Size(min = 24, max = 36, message = "The customerId must be between 24 and 36 characters")
         String customerId,
-    @Schema(description = "Title of the order", example = "669ead091f618f0711a65625")
+    @Schema(description = "Title of the order", example = "Computer repair")
         @NotBlank(message = "The title cannot be null or empty")
         @Size(min = 3, max = 45, message = "The title must be between 3 and 45 characters")
         String title,
