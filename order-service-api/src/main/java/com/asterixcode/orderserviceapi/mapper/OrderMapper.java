@@ -4,6 +4,7 @@ import static org.mapstruct.NullValueCheckStrategy.ALWAYS;
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
 import com.asterixcode.orderserviceapi.entity.Order;
+import java.util.List;
 import models.enums.OrderStatusEnum;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
@@ -33,9 +34,10 @@ public interface OrderMapper {
 
   OrderResponse fromEntity(Order updatedEntity);
 
+  List<OrderResponse> fromCollectionEntity(List<Order> orders);
+
   @Named("mapStatus")
   default OrderStatusEnum mapStatus(String orderStatus) {
     return OrderStatusEnum.toEnum(orderStatus);
   }
-
 }

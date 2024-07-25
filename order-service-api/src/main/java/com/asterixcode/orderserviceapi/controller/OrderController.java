@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class OrderController implements OrderControllerInterface {
 
@@ -23,6 +25,11 @@ public class OrderController implements OrderControllerInterface {
   @Override
   public ResponseEntity<OrderResponse> findById(Long id) {
     return ResponseEntity.ok().body(mapper.fromEntity(service.findById(id)));
+  }
+
+  @Override
+  public ResponseEntity<List<OrderResponse>> findAll() {
+    return ResponseEntity.ok().body(mapper.fromCollectionEntity(service.findAll()));
   }
 
   @Override

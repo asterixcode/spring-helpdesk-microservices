@@ -4,6 +4,7 @@ import com.asterixcode.orderserviceapi.entity.Order;
 import com.asterixcode.orderserviceapi.mapper.OrderMapper;
 import com.asterixcode.orderserviceapi.repository.OrderRepository;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import models.enums.OrderStatusEnum;
@@ -55,5 +56,10 @@ public class OrderService implements OrderServiceInterface {
   @Override
   public void deleteById(Long id) {
     repository.delete(findById(id));
+  }
+
+  @Override
+  public List<Order> findAll() {
+    return repository.findAll();
   }
 }
