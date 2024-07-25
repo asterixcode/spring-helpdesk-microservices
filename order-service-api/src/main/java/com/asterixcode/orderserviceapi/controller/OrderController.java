@@ -2,14 +2,14 @@ package com.asterixcode.orderserviceapi.controller;
 
 import com.asterixcode.orderserviceapi.mapper.OrderMapper;
 import com.asterixcode.orderserviceapi.service.OrderServiceInterface;
+import java.util.List;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 public class OrderController implements OrderControllerInterface {
@@ -47,5 +47,15 @@ public class OrderController implements OrderControllerInterface {
   public ResponseEntity<Void> deleteById(Long id) {
     service.deleteById(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @Override
+  public ResponseEntity<Page<OrderResponse>> findAllPaginated(
+      Integer page, Integer linesPerPage, String direction, String orderBy) {
+    return ResponseEntity.ok()
+        .body(
+            service
+                .findAllPaginated(page, linesPerPage, direction, orderBy)
+                .map(mapper::fromEntity));
   }
 }

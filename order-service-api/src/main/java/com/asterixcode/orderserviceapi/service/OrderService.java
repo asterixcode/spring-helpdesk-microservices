@@ -12,6 +12,8 @@ import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Log4j2
@@ -61,5 +63,15 @@ public class OrderService implements OrderServiceInterface {
   @Override
   public List<Order> findAll() {
     return repository.findAll();
+  }
+
+  @Override
+  public Page<Order> findAllPaginated(Integer page, Integer linesPerPage, String direction, String orderBy) {
+    PageRequest pageRequest = PageRequest.of(
+            page,
+            linesPerPage,
+            org.springframework.data.domain.Sort.Direction.valueOf(direction),
+            orderBy);
+    return repository.findAll(pageRequest);
   }
 }

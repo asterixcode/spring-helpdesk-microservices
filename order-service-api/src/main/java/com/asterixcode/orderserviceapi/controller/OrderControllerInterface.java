@@ -9,15 +9,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import models.exceptions.StandardError;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "OrderController", description = "Controller responsible for managing orders")
 @RequestMapping("/api/v1/orders")
@@ -178,4 +178,37 @@ public interface OrderControllerInterface {
           @Parameter(description = "Order ID", required = true, example = "2")
           @PathVariable(name = "id")
           final Long id);
+
+  @Operation(summary = "Find all orders paginated")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Orders found",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = OrderResponse.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class)))
+      })
+  @GetMapping("/paginated")
+  ResponseEntity<Page<OrderResponse>> findAllPaginated(
+      @Parameter(description = "Page number", required = true, example = "0")
+          @RequestParam(name = "page", defaultValue = "0")
+          final Integer page,
+      @Parameter(description = "Lines per page", required = true, example = "12")
+          @RequestParam(name = "linesPerPage", defaultValue = "12")
+          final Integer linesPerPage,
+      @Parameter(description = "Order direction", required = true, example = "ASC")
+          @RequestParam(name = "direction", defaultValue = "ASC")
+          final String direction,
+      @Parameter(description = "Order by field", required = true, example = "id")
+          @RequestParam(name = "orderBy", defaultValue = "id")
+          final String orderBy);
 }
