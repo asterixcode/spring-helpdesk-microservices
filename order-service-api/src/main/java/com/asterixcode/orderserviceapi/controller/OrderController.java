@@ -1,5 +1,6 @@
 package com.asterixcode.orderserviceapi.controller;
 
+import com.asterixcode.orderserviceapi.mapper.OrderMapper;
 import com.asterixcode.orderserviceapi.service.OrderServiceInterface;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
@@ -12,9 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController implements OrderControllerInterface {
 
   private final OrderServiceInterface service;
+  private final OrderMapper mapper;
 
-  public OrderController(OrderServiceInterface service) {
+  public OrderController(OrderServiceInterface service, OrderMapper mapper) {
     this.service = service;
+    this.mapper = mapper;
+  }
+
+  @Override
+  public ResponseEntity<OrderResponse> findById(Long id) {
+    return ResponseEntity.ok().body(mapper.fromEntity(service.findById(id)));
   }
 
   @Override

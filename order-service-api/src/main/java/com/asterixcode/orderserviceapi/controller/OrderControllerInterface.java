@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import models.exceptions.StandardError;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
@@ -19,6 +20,45 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "OrderController", description = "Controller responsible for managing orders")
 @RequestMapping("/api/v1/orders")
 public interface OrderControllerInterface {
+
+  @Operation(summary = "Find order by ID")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Order found",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = OrderResponse.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not found",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = StandardError.class)))
+      })
+  @GetMapping("/{id}")
+  ResponseEntity<OrderResponse> findById(
+      @NotNull(message = "Order ID must be informed")
+          @Parameter(description = "Order ID", required = true, example = "2")
+          @PathVariable(name = "id")
+          final Long id);
 
   @Operation(summary = "Save new order")
   @ApiResponses(
@@ -78,7 +118,8 @@ public interface OrderControllerInterface {
   @PutMapping("/{id}")
   ResponseEntity<OrderResponse> update(
       @Parameter(description = "Order ID", required = true, example = "2")
-      @PathVariable(name = "id") Long id,
-      @Parameter(description = "Update order request", required = true)
-      @Valid @RequestBody final UpdateOrderRequest request);
+          @PathVariable(name = "id")
+          Long id,
+      @Parameter(description = "Update order request", required = true) @Valid @RequestBody
+          final UpdateOrderRequest request);
 }
