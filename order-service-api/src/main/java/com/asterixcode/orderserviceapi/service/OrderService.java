@@ -51,6 +51,8 @@ public class OrderService implements OrderServiceInterface {
 
   @Override
   public OrderResponse update(Long id, UpdateOrderRequest request) {
+    validateUser(request);
+
     Order entity = findById(id);
     entity = mapper.fromRequest(request, entity);
 
@@ -62,6 +64,11 @@ public class OrderService implements OrderServiceInterface {
     log.info("Order updated: {}", updatedEntity);
 
     return mapper.fromEntity(updatedEntity);
+  }
+
+  private void validateUser(UpdateOrderRequest request) {
+    if (request.requesterId() != null) validateUserId(request.requesterId());
+    if (request.customerId() != null) validateUserId(request.customerId());
   }
 
   @Override
