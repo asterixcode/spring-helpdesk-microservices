@@ -83,7 +83,7 @@ public interface OrderControllerInterface {
   @GetMapping
   ResponseEntity<List<OrderResponse>> findAll();
 
-  @Operation(summary = "Save new order")
+  @Operation(summary = "Create new order")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "Order created"),
