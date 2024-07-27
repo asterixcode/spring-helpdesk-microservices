@@ -7,13 +7,3 @@ mail:
   username: ${MAIL_USERNAME}
   password: ${MAIL_PASSWORD}
   protocol: ${MAIL_PROTOCOL:smtp}
-  text-create-order-confirmation: |
-    Hello %s, your order has been created successfully.
-    
-    Order details:
-    - ID: %s
-    - Title: %s
-    - Description: %s
-    - Created at: %s
-    - Status: %s
-    - Responsible technician: %s

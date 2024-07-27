@@ -1,6 +1,8 @@
 package com.asterixcode.emailservice.listener;
 
+import com.asterixcode.emailservice.models.enums.OperationEnum;
 import com.asterixcode.emailservice.service.EmailService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import models.dto.OrderCreatedMessage;
@@ -24,8 +26,8 @@ public class OrderListener {
               value = @Queue(value = "queue.orders"),
               exchange = @Exchange(value = "helpdesk", type = ExchangeTypes.TOPIC),
               key = "rk.orders.create"))
-  public void listen(OrderCreatedMessage message) {
+  public void listen(OrderCreatedMessage message) throws MessagingException {
     log.info("Order created message received: {}", message);
-    emailService.sendMail(message);
+    emailService.sendHtmlMail(message, OperationEnum.ORDER_CREATED);
   }
 }
