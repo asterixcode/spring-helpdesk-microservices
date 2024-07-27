@@ -8,12 +8,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import models.dto.OrderCreatedMessage;
 import models.enums.OrderStatusEnum;
 import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
 import models.responses.UserResponse;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class OrderService implements OrderServiceInterface {
   private final OrderRepository repository;
   private final OrderMapper mapper;
   private final UserServiceFeignClient userServiceFeignClient;
+  private final RabbitTemplate rabbitTemplate;
 
   @Override
   public Order findById(Long id) {
@@ -41,12 +44,14 @@ public class OrderService implements OrderServiceInterface {
   public void save(CreateOrderRequest createOrderRequest) {
     final var requester = validateUserId(createOrderRequest.requesterId());
     final var customer = validateUserId(createOrderRequest.customerId());
-
-    log.info("Requester: {}", requester);
-    log.info("Customer: {}", customer);
-
     final var entity = repository.save(mapper.fromRequest(createOrderRequest));
+
     log.info("Order created: {}", entity);
+
+    rabbitTemplate.convertAndSend(
+            "helpdesk",
+        "rk.orders.create",
+        new OrderCreatedMessage(mapper.fromEntity(entity), customer, requester));
   }
 
   @Override
