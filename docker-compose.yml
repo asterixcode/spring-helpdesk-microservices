@@ -12,44 +12,51 @@ services:
       - helpdesk
 
   service-discovery:
-    image: asterixcode/helpdesk-service-discovery:latest
     container_name: service-discovery
+    build:
+      context: ./service-discovery
+      dockerfile: Dockerfile
     env_file:
       - ./service-discovery/.env
     ports:
       - "8761:8761"
     expose:
       - "8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://service-discovery:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     networks:
       - helpdesk
 
-  api-gateway:
-    image: asterixcode/helpdesk-api-gateway:latest
-    container_name: api-gateway
-    env_file:
-      - ./api-gateway/.env
-    ports:
-      - "8765:8765"
-    expose:
-      - "8765"
-    depends_on:
-      - service-discovery
-    networks:
-      - helpdesk
+  # api-gateway:
+  #   image: asterixcode/helpdesk-api-gateway:latest
+  #   container_name: api-gateway
+  #   env_file:
+  #     - ./api-gateway/.env
+  #   ports:
+  #     - "8765:8765"
+  #   expose:
+  #     - "8765"
+  #   depends_on:
+  #     - service-discovery
+  #   networks:
+  #     - helpdesk
 
-  config-server:
-    image: asterixcode/helpdesk-config-server:latest
-    container_name: config-server
-    env_file:
-      - ./config-server/.env
-    ports:
-      - "8888:8888"
-    expose:
-      - "8888"
-    depends_on:
-      - service-discovery
-    networks:
-      - helpdesk
+  # config-server:
+  #   image: asterixcode/helpdesk-config-server:latest
+  #   container_name: config-server
+  #   env_file:
+  #     - ./config-server/.env
+  #   ports:
+  #     - "8888:8888"
+  #   expose:
+  #     - "8888"
+  #   depends_on:
+  #     - service-discovery
+  #   networks:
+  #     - helpdesk
 
 networks:
   helpdesk:
