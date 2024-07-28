@@ -67,6 +67,25 @@ services:
     networks:
       - helpdesk
 
+  auth-service:
+    container_name: auth-service
+    build:
+      context: ./auth-service-api
+      dockerfile: Dockerfile
+    env_file:
+      - ./auth-service-api/.env
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    depends_on:
+      service-discovery:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - helpdesk
+
 networks:
   helpdesk:
     driver: bridge
