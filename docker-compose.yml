@@ -70,7 +70,7 @@ services:
       - helpdesk
 
   auth-service:
-    container_name: auth-service
+    container_name: auth-service-api
     build:
       context: ./auth-service-api
       dockerfile: Dockerfile
@@ -101,6 +101,21 @@ services:
       config-server:
         condition: service_healthy
       rabbitmq:
+        condition: service_healthy
+    networks:
+      - helpdesk
+
+  user-service:
+    container_name: user-service-api
+    build:
+      context: ./user-service-api
+      dockerfile: Dockerfile
+    env_file:
+      - ./user-service-api/.env
+    depends_on:
+      service-discovery:
+        condition: service_healthy
+      config-server:
         condition: service_healthy
     networks:
       - helpdesk

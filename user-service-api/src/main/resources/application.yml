@@ -1,6 +1,3 @@
 spring:
   application:
     name: 'user-service-api'
-  cloud:
-    config:
-      uri: 'config-server'
