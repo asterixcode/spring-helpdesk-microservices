@@ -3,3 +3,15 @@ spring:
     mongodb:
       uri: mongodb://test
       database: test-db
+springdoc:
+  open-api:
+    info:
+      title: 'User Service API'
+      description: 'Component responsible for user management'
+      version: '1.0.0'
+eureka:
+  client:
+    service-url:
+      fetch-registry: true
+      register-with-eureka: true
+      defaultZone: http://localhost:8761/eureka
