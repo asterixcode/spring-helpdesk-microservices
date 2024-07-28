@@ -13,29 +13,17 @@ dependencies {
         because('This is a common library for the project')
     }
 
-    implementation ('org.springframework.boot:spring-boot-starter-amqp') {
-        because('Starter for integration with RabbitMQ')
-    }
-
-    implementation ('org.springframework.cloud:spring-cloud-starter-config') {
-        because('Starter for using Spring Cloud Config Server')
-    }
-
-    implementation ('org.springframework.cloud:spring-cloud-starter-bootstrap') {
-        because('Starter for using Spring Cloud Config Server')
-    }
-
-    implementation ('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client') {
-        because('Starter for using Eureka Server')
-    }
-
-    implementation ('org.springframework.cloud:spring-cloud-starter-openfeign') {
-        because('Starter for using Feign Client')
-    }
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
     implementation 'org.postgresql:postgresql'
@@ -47,7 +35,6 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'com.h2database:h2'
 }
 
 dependencyManagement {
