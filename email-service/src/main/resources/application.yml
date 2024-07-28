@@ -1,9 +1,22 @@
 spring:
   application:
     name: 'email-service'
+  rabbitmq:
+    port: ${RABBITMQ_PORT}
+    addresses: ${RABBITMQ_ADDRESSES}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
 mail:
   host: ${MAIL_HOST:smtp.gmail.com}
   port: ${MAIL_PORT:587}
   username: ${MAIL_USERNAME}
   password: ${MAIL_PASSWORD}
   protocol: ${MAIL_PROTOCOL:smtp}
+eureka:
+  client:
+    service-url:
+      fetch-registry: true
+      register-with-eureka: true
+      defaultZone: ${EUREKA_URI}
+server:
+  port: ${SERVER_PORT:0}
