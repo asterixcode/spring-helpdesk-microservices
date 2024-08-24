@@ -21,8 +21,7 @@ public class CustomizeApplicationLoggingInterceptor implements HandlerIntercepto
   public boolean preHandle(
       @Nonnull HttpServletRequest request,
       @Nonnull HttpServletResponse response,
-      @Nonnull Object handler)
-      throws Exception {
+      @Nonnull Object handler) {
     String requestId = UUID.randomUUID().toString().substring(0, 6);
     MDC.put(REQUEST_ID, requestId);
     LOGGER.info("Received request with ID: {}", requestId);
@@ -34,8 +33,7 @@ public class CustomizeApplicationLoggingInterceptor implements HandlerIntercepto
       @Nonnull HttpServletRequest request,
       @Nonnull HttpServletResponse response,
       @Nonnull Object handler,
-      Exception ex)
-      throws Exception {
+      Exception ex) {
     String requestId = MDC.get(REQUEST_ID);
     LOGGER.info("Request with ID {} completed", requestId);
     MDC.remove(REQUEST_ID);
