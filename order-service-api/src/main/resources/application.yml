@@ -7,3 +7,7 @@ spring:
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
     connection-timeout: ${RABBITMQ_CONNECTION_TIMEOUT}
+
+logging:
+  pattern:
+    console: '%d{HH:mm:ss.SSS} %highlight(%5level) [%highlight(%t)] [RequestId %X{requestId}] %highlight(%c{0}:%L) - %yellow(%msg%n%throwable)'
