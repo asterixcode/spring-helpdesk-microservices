@@ -9,7 +9,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "user-service-api", path = "/api/v1/users")
+@FeignClient(
+    name = "localhost:8765/user-service-api", // TODO: Change this to the correct URL
+    path = "/api/v1/users")
 public interface UserFeignClient {
 
   @GetMapping("/{id}")

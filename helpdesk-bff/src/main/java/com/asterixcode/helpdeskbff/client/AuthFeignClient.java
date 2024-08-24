@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "auth-service-api", path = "/api/v1/auth")
+@FeignClient(name = "localhost:8765/auth-service-api", path = "/api/v1/auth")
 public interface AuthFeignClient {
 
   @PostMapping("/login")
