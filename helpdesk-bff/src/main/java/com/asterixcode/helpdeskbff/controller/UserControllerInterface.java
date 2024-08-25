@@ -16,6 +16,7 @@ import models.requests.UpdateUserRequest;
 import models.responses.UserResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "User Controller", description = "Controller responsible for user operations")
@@ -90,6 +91,7 @@ public interface UserControllerInterface {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = StandardError.class)))
       })
+  @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
   @GetMapping
   ResponseEntity<List<UserResponse>> findAll();
 
