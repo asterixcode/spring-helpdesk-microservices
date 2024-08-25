@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import models.exceptions.JWTCustomException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class JWTUtil {
         | MalformedJwtException
         | SignatureException
         | IllegalArgumentException ex) {
-      throw new RuntimeException(ex.getMessage());
+      throw new JWTCustomException(ex.getMessage());
     }
   }
 
@@ -46,6 +47,6 @@ public class JWTUtil {
               authority -> (GrantedAuthority) () -> authority.get("authority"))
           .toList();
     }
-    throw new RuntimeException("No authorities found in token");
+    throw new JWTCustomException("No authorities found in token");
   }
 }

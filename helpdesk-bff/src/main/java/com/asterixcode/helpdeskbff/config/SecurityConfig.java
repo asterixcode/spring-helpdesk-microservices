@@ -29,6 +29,16 @@ public class SecurityConfig {
     "/api/v1/auth/login", "/api/v1/auth/refresh-token"
   };
 
+  protected static final String[] PUBLIC_ROUTES = {
+    "/v3/api-docs/**",
+    "/swagger-ui.html",
+    "/swagger-ui/**",
+    "/swagger-resources/**",
+    "/webjars/**",
+    "/api/v1/auth/login",
+    "/api/v1/auth/refresh-token"
+  };
+
   public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
     this.authenticationConfiguration = authenticationConfiguration;
     this.jwtUtil = jwtUtil;
@@ -38,7 +48,7 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http.addFilterBefore(
             new JWTAuthorizationFilter(
-                authenticationConfiguration.getAuthenticationManager(), jwtUtil),
+                authenticationConfiguration.getAuthenticationManager(), jwtUtil, PUBLIC_ROUTES),
             JWTAuthorizationFilter.class)
         // Disable CSRF
         .csrf(AbstractHttpConfigurer::disable)
