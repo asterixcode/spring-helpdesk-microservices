@@ -16,6 +16,8 @@ import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
 import models.responses.UserResponse;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class OrderService implements OrderServiceInterface {
   private final RabbitTemplate rabbitTemplate;
 
   @Override
+  @Cacheable(value = "orders", key = "#id")
   public Order findById(Long id) {
     return repository
         .findById(id)
@@ -41,6 +44,7 @@ public class OrderService implements OrderServiceInterface {
   }
 
   @Override
+  @CacheEvict(value = "orders", allEntries = true)
   public void save(CreateOrderRequest createOrderRequest) {
     final var requester = validateUserId(createOrderRequest.requesterId());
     final var customer = validateUserId(createOrderRequest.customerId());
@@ -49,12 +53,13 @@ public class OrderService implements OrderServiceInterface {
     log.info("Order created: {}", entity);
 
     rabbitTemplate.convertAndSend(
-            "helpdesk",
+        "helpdesk",
         "rk.orders.create",
         new OrderCreatedMessage(mapper.fromEntity(entity), customer, requester));
   }
 
   @Override
+  @CacheEvict(value = "orders", allEntries = true)
   public OrderResponse update(Long id, UpdateOrderRequest request) {
     validateUser(request);
 
@@ -77,16 +82,21 @@ public class OrderService implements OrderServiceInterface {
   }
 
   @Override
+  @CacheEvict(value = "orders", allEntries = true)
   public void deleteById(Long id) {
     repository.delete(findById(id));
   }
 
   @Override
+  @Cacheable(value = "orders")
   public List<Order> findAll() {
     return repository.findAll();
   }
 
   @Override
+  @Cacheable(
+      value = "orders",
+      key = "#page + '-' + #linesPerPage + '-' + #direction + '-' + #orderBy")
   public Page<Order> findAllPaginated(
       Integer page, Integer linesPerPage, String direction, String orderBy) {
     PageRequest pageRequest =
@@ -98,7 +108,7 @@ public class OrderService implements OrderServiceInterface {
     return repository.findAll(pageRequest);
   }
 
-  UserResponse validateUserId(final String userId) {
-    return userServiceFeignClient.findById(userId).getBody();
+  public UserResponse validateUserId(final String id) {
+    return userServiceFeignClient.findById(id).getBody();
   }
 }
