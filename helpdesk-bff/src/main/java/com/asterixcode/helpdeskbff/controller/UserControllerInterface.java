@@ -42,6 +42,7 @@ public interface UserControllerInterface {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = StandardError.class)))
       })
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TECHNICIAN')")
   @GetMapping("/{id}")
   ResponseEntity<UserResponse> findById(
       @Parameter(
@@ -70,6 +71,7 @@ public interface UserControllerInterface {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = StandardError.class)))
       })
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
   @PostMapping
   ResponseEntity<Void> save(@Valid @RequestBody CreateUserRequest createUserRequest);
 
@@ -91,7 +93,7 @@ public interface UserControllerInterface {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = StandardError.class)))
       })
-  @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TECHNICIAN')")
   @GetMapping
   ResponseEntity<List<UserResponse>> findAll();
 
@@ -127,6 +129,7 @@ public interface UserControllerInterface {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = StandardError.class)))
       })
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
   @PutMapping("/{id}")
   ResponseEntity<UserResponse> update(
       @Parameter(
