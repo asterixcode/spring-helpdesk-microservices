@@ -1,5 +1,6 @@
 package com.asterixcode.helpdeskbff.client;
 
+import com.asterixcode.helpdeskbff.config.FeignConfig;
 import jakarta.validation.Valid;
 import java.util.List;
 import models.requests.CreateUserRequest;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(
     name = "localhost:8765/user-service-api", // TODO: Change this to the correct URL
-    path = "/api/v1/users")
+    path = "/api/v1/users",
+    configuration = FeignConfig.class)
 public interface UserFeignClient {
 
   @GetMapping("/{id}")
